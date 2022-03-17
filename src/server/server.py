@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
+# server.py: Main server process. Opens a websocket 
+# server on port 8765. Serves the value of the variables
+# stored under the data folder repeatedly, as fast as the 
+# client wants.
+# Websocket URL format: 
+# ws://localhost:8765/<variable_name>?updatespersecond=<number>
+
 import asyncio
 import websockets
-import time
 
-# Función de respuesta a peticiones al servidor websocket
-# Resource es el contenido de la URL tras la dirección del servidor
-async def echo(websocket, resource):
+async def echo_var_value(websocket, resource):
     global connections
 
     variable = resource.split('?')[0]
@@ -23,7 +27,7 @@ async def echo(websocket, resource):
 
 
 async def main():
-    async with websockets.serve(echo, host="localhost", port=8765):
+    async with websockets.serve(echo_var_value, host="localhost", port=8765):
         await asyncio.Future()  # run forever
 
 asyncio.run(main())
